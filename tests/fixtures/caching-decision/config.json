@@ -1,0 +1,6 @@
+{
+  // Anthropic API client configuration
+  "model": "claude-opus-4-6",
+  "stream": true,
+  "cache": false
+}

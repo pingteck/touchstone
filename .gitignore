@@ -1,0 +1,12 @@
+.DS_Store
+
+# Raw skill-gap reports are a local working queue — never auto-commit them
+# (they may carry un-scrubbed content from a context-less producer).
+feedback/inbox/*
+!feedback/inbox/.gitkeep
+
+# distribution bundles (built on demand, never committed)
+/dist/
+
+# Serena project cache/memories — local only, never public
+.serena/
