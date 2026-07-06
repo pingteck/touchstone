@@ -34,9 +34,10 @@ genuinely open, `decision-panel` owns it; only a fully-settled single design goe
   explicit principle (may override the majority) and always reports **what you lose**.
 - **Fail honestly.** Clean bill, "not actually contested", "can't verify" → said plainly,
   never theater.
-- **Capability-first, honest about the ceiling.** Reasoning-heavy roles default to Opus;
-  diversity comes from stance + verification, not weaker models; the all-Claude
-  shared-bias ceiling is named in every report.
+- **Capability-first, honest about the ceiling.** Reasoning-heavy roles default to an
+  opus-class or stronger model (a user's explicit model choice wins); diversity comes
+  from stance + verification, not weaker models; the all-Claude shared-bias ceiling is
+  named in every report.
 
 ## Improving the skills (feedback loop)
 
@@ -80,17 +81,21 @@ Then `/reload-skills`. Symlinks store an **absolute path**, so `-sfn` is also ho
 **re-point** after moving the repo — just re-run with the new `REPO`. Verify with
 `test -f ~/.claude/skills/red-team/SKILL.md && echo OK`; remove with `rm ~/.claude/skills/red-team`
 (deletes only the link). `skills/_shared/verifier-contract.md` is the **canonical** verifier
-discipline; each `SKILL.md` inlines it and is self-contained, so the skills work even though
-`_shared/` isn't symlinked. If you edit the discipline, update the shared file **and** every inline copy.
+discipline; each carrier skill ships a byte-identical copy at
+`references/verifier-contract.md` inside its own directory, so the skills stay
+self-contained even though `_shared/` isn't symlinked. Edit the canonical file, then
+copy it over each skill's copy — `tests/lint-verifier-sync.sh` enforces sync.
 
 ## Repo layout
 
 ```
 skills/
   red-team/SKILL.md
+  red-team/references/verifier-contract.md      # linted copy of the shared contract
   decision-panel/SKILL.md
+  decision-panel/references/verifier-contract.md # linted copy of the shared contract
   report-skill-gap/SKILL.md        # producer skill for the feedback loop
-  _shared/verifier-contract.md     # canonical verifier discipline (also inlined per skill)
+  _shared/verifier-contract.md     # canonical verifier discipline (copies linted)
 feedback/
   README.md                        # report format + consumer gate
   inbox/                           # git-ignored queue of incoming reports
@@ -101,6 +106,7 @@ tests/
   fixtures/                        # decision/design artifacts used to test the skills
   lint-pointer-sync.sh             # asserts the "Improving this skill" pointer stays byte-identical
   lint-plugin-manifest.sh          # asserts plugin.json is consistent with skills/
+  lint-verifier-sync.sh            # asserts the contract copies match the canonical file
 .github/
   CONTRIBUTING.md                  # how to contribute + report gaps
   ISSUE_TEMPLATE/skill-feedback.md # the skill-feedback intake template

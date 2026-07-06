@@ -14,10 +14,11 @@ added. See `README.md` for the overview.
   means running the writing-skills TDD loop: RED (baseline without the change) → GREEN
   (with it) → guards. This applies to "small" edits too. (`superpowers:writing-skills`.)
 
-- **The verifier discipline lives in THREE places:** `skills/_shared/verifier-contract.md`
-  (canonical) and inlined in **both** `red-team/SKILL.md` and `decision-panel/SKILL.md`
-  (so each skill is self-contained under symlink install). **Edit all three together** —
-  they must not drift.
+- **The verifier discipline is one canonical file with linted copies:**
+  `skills/_shared/verifier-contract.md` is canonical; each carrier skill ships a
+  byte-identical copy at `skills/<skill>/references/verifier-contract.md` (so the skill
+  stays self-contained under any install). Edit the canonical file, then `cp` it over
+  every copy — `tests/lint-verifier-sync.sh` enforces identity.
 
 - **Test fixtures in `tests/fixtures/` must stay CLEAN INPUTS.** They are the artifacts
   the skills are tested against. When running a skill on a fixture, capture the output
@@ -26,9 +27,10 @@ added. See `README.md` for the overview.
   if it happens.)
 
 - **Capability-first model policy:** dispatch every subagent with an explicit `model`
-  (default **opus** for the reasoning-heavy roles — advocates, verifier, mediator,
-  synthesis-check). Diversity comes from stance + verification, not weaker models;
-  model-mix is a high-stakes opt-in.
+  (an opus-class or stronger reasoning model for the reasoning-heavy roles — an explicit
+  user model choice always wins — advocates, verifier, mediator, synthesis-check).
+  Diversity comes from stance + verification, not weaker models; model-mix is a
+  high-stakes opt-in.
 
 - **Self-containment:** no hard dependencies on other skills (they can drift and change
   behavior). Encode discipline inline; use soft "see also" pointers only.
@@ -45,9 +47,8 @@ added. See `README.md` for the overview.
   - **The "## Improving this skill" pointer block is BYTE-IDENTICAL across all host skills**
     (decision-panel, red-team, future skills) — a fourth synced surface alongside the
     verifier-contract three places. Edit all copies together; `tests/lint-pointer-sync.sh`
-    enforces it. Hosts are auto-discovered by `tests/lint-pointer-sync.sh`; a new skill MUST
-    carry the pointer block, or be added to the lint's `EXCLUDE` list only if it intentionally
-    has none.
+    enforces it and auto-discovers hosts — a new skill MUST carry the pointer block, or be
+    added to the lint's `EXCLUDE` list only if it intentionally has none.
   - **`report-skill-gap` ships `disable-model-invocation: true`** — invoke it explicitly
     (`/report-skill-gap`) or via a host pointer; it never fires autonomously.
   - **The `.github/ISSUE_TEMPLATE/skill-feedback.md` template duplicates the report

@@ -4,4 +4,5 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 ./tests/lint-pointer-sync.sh
 ./tests/lint-plugin-manifest.sh
+./tests/lint-verifier-sync.sh
 echo "OK: all lints passed"
