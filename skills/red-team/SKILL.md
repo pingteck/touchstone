@@ -46,8 +46,10 @@ confirm converged (else → decision-panel)
   → [3] adjudicate in the main thread → severity-ranked report
 ```
 
-Default ≈ 3 subagent calls + main-thread adjudication. Dispatch every subagent with an
-explicit `model` (default `opus` — this is reasoning-heavy). The verifier runs in a
+Default = 2 subagent calls (adversary, verifier) + main-thread adjudication. Dispatch
+every subagent with an explicit `model` — an opus-class or stronger reasoning model
+(an explicit user model choice always wins; the footer names the model). The verifier
+runs in a
 **separate** context from the adversary (independence catches the adversary's own
 hallucinated evidence).
 
@@ -123,12 +125,15 @@ on it.
    dropped"). No finding silently disappears: if a finding is folded or dropped during
    adjudication, it still gets a ledger line — never just a mention in prose. If the
    count changed from the adversary's, the ledger shows why.
-5. **Shared-bias + cost footer** — "all reviewers Claude; model-mix off; ~N calls."
+5. **Shared-bias + cost footer** — "all reviewers Claude (<model>); model-mix off; ~N calls."
 6. **Do this first** — the mitigations as a dependency-ordered sequence.
 
 ## Cost & opt-ins (no flag system — strong defaults + plain language)
 
-- **Default (tight):** adversary → verify Critical/High → adjudicate. All opus. ~3–4 calls.
+- **Default (tight):** adversary → verify Critical/High → adjudicate. 2 subagent calls;
+  +1–2 more only if adjudication raises a new severe finding that itself needs
+  verification.
+- **"run it lean on <model>"** → all roles on that model; the footer names it.
 - **"verify everything"** → verifier checks all findings, not just Critical/High.
 - **"high-stakes / add diversity"** → split the adversary into separate per-lens
   subagents (and optionally a model-mixed lens). Costs more; use when stakes justify it.
@@ -139,7 +144,7 @@ on it.
 
 | Rationalization | Reality |
 |---|---|
-| "This claim is obviously true, no need to check" | Obvious-but-false is exactly what red-team exists to catch (F2: "it's gitignored" was false). Verify. |
+| "This claim is obviously true, no need to check" | Obvious-but-false is exactly what red-team exists to catch — "it's gitignored" / "it's already validated" are classic examples. Verify. |
 | "I know this API/behavior from training" | Memory drifts and is version-specific. Pin a current authoritative source or tag `[UNCONFIRMED]`. |
 | "I can't verify it, so I'll skip it / assume it's fine" | The unverifiability IS the finding. Tag `[UNCONFIRMED]`, name the assumption, say "go verify". |
 | "Severity ranking is fluff" | Unranked findings bury the ship-blockers. Critical/High/Medium/Low is required. |

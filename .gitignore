@@ -10,3 +10,7 @@ feedback/inbox/*
 
 # Serena project cache/memories — local only, never public
 .serena/
+
+# Local design specs & plans — working docs, free to carry session-specific
+# detail; never published (this is a public repo)
+docs/superpowers/
