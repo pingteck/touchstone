@@ -207,4 +207,4 @@ stated assumption** with a **hard revisit trigger.**
 
 ## Improving this skill
 
-If, while using this skill, one of these held — you contradicted an explicit instruction here, the skill gave no guidance for a situation you were forced to handle, or you caught yourself rationalizing around one of its rules — consider **offering** to file a feedback report via `/report-skill-gap` (consent-first; never for normal use or mere preference).
+If, while using this skill, one of these held — you contradicted an explicit instruction here, the skill gave no guidance for a situation you were forced to handle, or you caught yourself rationalizing around one of its rules — consider **suggesting the user run `/report-skill-gap`** to file a feedback report (the user must invoke it themselves; never suggest it for normal use or mere preference).

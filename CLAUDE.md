@@ -49,8 +49,9 @@ added. See `README.md` for the overview.
     verifier-contract copies. Edit all copies together; `tests/lint-pointer-sync.sh`
     enforces it and auto-discovers hosts — a new skill MUST carry the pointer block, or be
     added to the lint's `EXCLUDE` list only if it intentionally has none.
-  - **`report-skill-gap` ships `disable-model-invocation: true`** — invoke it explicitly
-    (`/report-skill-gap`) or via a host pointer; it never fires autonomously.
+  - **`report-skill-gap` ships `disable-model-invocation: true`** — only the user can
+    invoke it (`/report-skill-gap`), typically prompted by a host skill's pointer; it
+    never fires autonomously.
   - **The `.github/ISSUE_TEMPLATE/skill-feedback.md` template duplicates the report
     schema** from `feedback/README.md` — a sync surface. If you change the schema, update
     the template's fields too.

@@ -33,30 +33,30 @@ weaker, resting its case solely on "clearly necessary," which the evidence defea
 
 ## 4. Crux resolution (decomposed → verified)
 - **CRUX-1 (decisive) — Postgres sustains ~500 jobs/sec.**
-  - 1a `[WEB-VERIFIED]`: *"a well-specced database server can queue around 172,000 jobs
+  - 1a `[VERIFIED]`: *"a well-specced database server can queue around 172,000 jobs
     per second from a single PostgreSQL client … process around 196k jobs per second"* —
     worker.graphile.org/docs/performance. 500/sec ≈ 0.3% of this. **Demoting caveat
     (quoted):** *"optimial conditions"*, on one dev box running DB+workers together — not
     a production app-load-sharing config.
-  - 1b `[WEB-VERIFIED]`: *"the ceiling is lower than most people expect"* but *"Under 100
+  - 1b `[VERIFIED]`: *"the ceiling is lower than most people expect"* but *"Under 100
     concurrent workers, simple jobs – Postgres with SKIP LOCKED is fine"* —
     richyen.com/postgres/2026/05/04/postgres_job_queue.html. 500 short sends/sec fits.
   - **Verdict:** achievable (not `[UNCONFIRMED]`); residual is shared-instance contention
     → CRUX-2. Value residual: none.
 - **CRUX-2 — bloat real, and mitigable.**
-  - 2a `[WEB-VERIFIED]`: *"Dead tuples accumulate faster than autovacuum can clean them"*;
+  - 2a `[VERIFIED]`: *"Dead tuples accumulate faster than autovacuum can clean them"*;
     *"dead tuples grow about 14×, … table size about 15×, and dequeue throughput drops
     about 35%"* — github.com/NikolayS/pgque.
-  - 2b `[WEB-VERIFIED]`: *"use TRUNCATE or drop partitions … vacuuming is not needed and
+  - 2b `[VERIFIED]`: *"use TRUNCATE or drop partitions … vacuuming is not needed and
     bloat is not an issue"*; *"TRUNCATE rotation creates zero dead tuples by
     construction"* — github.com/NikolayS/pgque.
   - **Value residual → principle:** the partition/TRUNCATE work on familiar, already-
     backed-up infra is a smaller operational surface than standing up + securing a new
     Redis → principle selects A.
 - **CRUX-3 — Redis/BullMQ durability weaker (B's own concession, verified).**
-  - 3a `[WEB-VERIFIED]`: *"Many hosting solutions do not offer persistence by default …
+  - 3a `[VERIFIED]`: *"Many hosting solutions do not offer persistence by default …
     needs to be configured per instance."* — docs.bullmq.io/guide/going-to-production.
-  - 3b `[WEB-VERIFIED]`: *"We recommend enabling AOF …"*, *"1 second per write is enough
+  - 3b `[VERIFIED]`: *"We recommend enabling AOF …"*, *"1 second per write is enough
     for most applications"* (~1s loss window), *"maxmemory-policy … noeviction … the only
     setting that guarantees correct behavior."* — same source.
   - **Verdict:** confirmed; B is a strict durability regression vs A's free WAL durability.
@@ -84,7 +84,7 @@ weaker, resting its case solely on "clearly necessary," which the evidence defea
 
 ## 7. Confidence + revisit trigger
 - **Moderate-to-high** on option A, **conditional** on the shared-instance assumption
-  (throughput feasibility, bloat mitigability, B's durability regression all `[WEB-VERIFIED]`;
+  (throughput feasibility, bloat mitigability, B's durability regression all `[VERIFIED]`;
   shared-instance behavior extrapolated).
 - **Rests explicitly on the assumption** (one-way-door logic): Postgres can absorb ~500
   jobs/sec churn without degrading primary OLTP, given a partitioned/TRUNCATE-rotated
@@ -99,6 +99,6 @@ weaker, resting its case solely on "clearly necessary," which the evidence defea
   real risk of mutually reinforcing status-quo bias; the shared-instance risk (slot 6) is
   where it's most likely hiding. Mitigated by requiring B be refuted on the merits
   (throughput verified, not assumed), and by gating on the load test.
-- **Cost:** 3 web searches + 4 fetches; 6 factual sub-claims, all `[WEB-VERIFIED]` with
+- **Cost:** 3 web searches + 4 fetches; 6 factual sub-claims, all `[VERIFIED]` with
   pinned URL + exact quote; 0 `[UNCONFIRMED]`; C eliminated at the gate. All reviewers
   Claude; model-mix off.

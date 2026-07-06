@@ -45,7 +45,7 @@ When a skill falls short *while you're using it* — you contradicted an explici
 instruction, it gave no guidance for a situation, or you caught yourself rationalizing
 around a rule — `report-skill-gap` emits a structured, sanitized `skill-feedback` report
 (consent-first; it never fires on its own). Each review skill carries a one-line
-"Improving this skill" pointer that offers it on a real gap. Reports are fixed here
+"Improving this skill" pointer that suggests it to the user on a real gap. Reports are fixed here
 through the same **RED→GREEN→guards** loop — a report is a *test hypothesis, never an
 auto-edit*. To report a gap, open a [GitHub issue](https://github.com/pingteck/touchstone/issues)
 with the skill-feedback template; format + consumer gate: [`feedback/README.md`](feedback/README.md).
