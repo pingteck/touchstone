@@ -73,28 +73,18 @@ evidence (the verifier does that).
 > on (with the file path or the external claim to check), and a proposed mitigation.
 > Add one content-specific lens only if the artifact clearly warrants it.
 
-## [2] Independent verifier subagent — the verification contract
+## [2] Independent verifier subagent
 
-Dispatch a **separate** subagent (opus, skeptical, ground-truth-only) to verify
-**Critical/High** findings (or **all** findings if the user said "verify everything").
-It is the step the baseline never does, so it is non-negotiable.
+Dispatch a **separate** verifier subagent to check **Critical/High** findings (or
+**all** findings if the user said "verify everything"). It is the step the baseline
+never does, so it is non-negotiable.
 
-**Two sources of truth** — check each claim against the RIGHT one:
-- **Internal/repo claim** ("it's gitignored", "`command -v` passes") → read the actual
-  files / run read-only commands. Pin `path:line` + the snippet.
-- **External/world claim** ("API delivers exactly-once", "rejects JSONC", "X behaves
-  like Y") → web-search authoritative sources. Pin **URL + the exact quote**.
-
-**Tag every checked finding** and demote what doesn't hold:
-- `[VERIFIED]` / `[WEB-VERIFIED]` — confirmed, evidence pinned.
-- `[REFUTED]` / `[WEB-REFUTED]` — the finding is wrong; drop it (keep a one-line trace).
-- `[UNCONFIRMED]` / `[WEB-INCONCLUSIVE]` — couldn't confirm; **demote severity** and
-  say so. Never present as confirmed.
-
-**Source-quality discipline:** prefer primary/authoritative sources (official docs,
-the actual source, specs/RFCs) over blogs/forums/memory. **Asserting from training
-memory is not verification** — go check. A weak/secondary source stays
-`[UNCONFIRMED]`. Note version/date when behavior is version-specific.
+**REQUIRED: read `references/verifier-contract.md` (in this skill's directory) and
+include it verbatim in the verifier's dispatch prompt.** In short: the verifier runs
+in a separate context from the adversary; repo claims are pinned `path:line` +
+snippet, external claims URL + exact quote; every checked finding is tagged
+`[VERIFIED]` / `[REFUTED]` / `[UNCONFIRMED]`; unconfirmed findings are **demoted**,
+never presented as confirmed.
 
 ## [3] Adjudicate (main thread — you, with the user)
 
