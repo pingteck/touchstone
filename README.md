@@ -44,7 +44,7 @@ genuinely open, `decision-panel` owns it; only a fully-settled single design goe
 When a skill falls short *while you're using it* — you contradicted an explicit
 instruction, it gave no guidance for a situation, or you caught yourself rationalizing
 around a rule — `report-skill-gap` emits a structured, sanitized `skill-feedback` report
-(consent-first; it never fires on its own). Each review skill carries a one-line
+(a hard invocation gate — only the user can invoke it; it never fires on its own). Each review skill carries a one-line
 "Improving this skill" pointer that suggests it to the user on a real gap. Reports are fixed here
 through the same **RED→GREEN→guards** loop — a report is a *test hypothesis, never an
 auto-edit*. To report a gap, open a [GitHub issue](https://github.com/pingteck/touchstone/issues)
