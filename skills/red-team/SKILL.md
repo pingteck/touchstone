@@ -55,7 +55,7 @@ hallucinated evidence).
 
 ## [1] Adversary subagent
 
-Dispatch one subagent (opus) with this mandate. It attacks from three angles and
+Dispatch one subagent (an opus-class model) with this mandate. It attacks from three angles and
 returns findings in the **finding shape** below — it does NOT get to bless its own
 evidence (the verifier does that).
 

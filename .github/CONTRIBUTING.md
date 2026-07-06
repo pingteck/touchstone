@@ -28,7 +28,7 @@ rationalizing around one of its rules. **Not** for normal use or a mere preferen
 **How:**
 
 1. **Produce a report.** Run `/report-skill-gap` if you have it installed (it emits a
-   structured, consent-first, sanitized block), or fill the fields in the issue template by
+   structured, sanitized block), or fill the fields in the issue template by
    hand.
 2. **Sanitize.** This is a public repository — strip secrets, credentials, PII, customer
    names, internal hostnames, and proprietary content. If you can't describe the gap
