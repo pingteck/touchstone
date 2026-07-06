@@ -45,8 +45,8 @@ added. See `README.md` for the overview.
   - **`feedback/inbox/` is git-ignored on purpose** — never force-add a raw report; commit
     only a scrubbed one-line trace to `feedback/processed/` or the fix commit.
   - **The "## Improving this skill" pointer block is BYTE-IDENTICAL across all host skills**
-    (decision-panel, red-team, future skills) — a fourth synced surface alongside the
-    verifier-contract three places. Edit all copies together; `tests/lint-pointer-sync.sh`
+    (decision-panel, red-team, future skills) — a second synced surface alongside the
+    verifier-contract copies. Edit all copies together; `tests/lint-pointer-sync.sh`
     enforces it and auto-discovers hosts — a new skill MUST carry the pointer block, or be
     added to the lint's `EXCLUDE` list only if it intentionally has none.
   - **`report-skill-gap` ships `disable-model-invocation: true`** — invoke it explicitly
