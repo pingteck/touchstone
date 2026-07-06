@@ -45,8 +45,9 @@ added. See `README.md` for the overview.
   - **The "## Improving this skill" pointer block is BYTE-IDENTICAL across all host skills**
     (decision-panel, red-team, future skills) — a fourth synced surface alongside the
     verifier-contract three places. Edit all copies together; `tests/lint-pointer-sync.sh`
-    enforces it. When adding a new skill, add the pointer block and the skill to the lint's
-    `HOSTS` list.
+    enforces it. Hosts are auto-discovered by `tests/lint-pointer-sync.sh`; a new skill MUST
+    carry the pointer block, or be added to the lint's `EXCLUDE` list only if it intentionally
+    has none.
   - **`report-skill-gap` ships `disable-model-invocation: true`** — invoke it explicitly
     (`/report-skill-gap`) or via a host pointer; it never fires autonomously.
   - **The `.github/ISSUE_TEMPLATE/skill-feedback.md` template duplicates the report

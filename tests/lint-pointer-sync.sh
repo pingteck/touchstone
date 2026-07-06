@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
 # Asserts the "Improving this skill" pointer block is present and byte-identical
-# across all host skills (spec §8 / F9). Exit 0 = in sync, 1 = drift.
+# across all host skills. Hosts are AUTO-DISCOVERED: every skills/*/SKILL.md not in
+# EXCLUDE. A new skill missing the block therefore FAILS this lint (add it to
+# EXCLUDE only if it should intentionally carry no pointer). Exit 0 = in sync.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-HOSTS=(skills/decision-panel/SKILL.md skills/red-team/SKILL.md)
-# Capture from the pointer heading until the next `## ` section (or EOF), so the
-# lint stays correct even if a host skill gains a section after the pointer.
+# Skills that intentionally carry NO pointer block (e.g. the feedback producer itself).
+EXCLUDE="report-skill-gap"
+
+HOSTS=()
+for d in skills/*/; do
+  name="$(basename "$d")"
+  [ -f "${d}SKILL.md" ] || continue
+  case " $EXCLUDE " in *" $name "*) continue;; esac
+  HOSTS+=("${d}SKILL.md")
+done
+if [ "${#HOSTS[@]}" -lt 1 ]; then echo "FAIL: no host skills discovered"; exit 1; fi
+
+# Capture from the pointer heading until the next `## ` section (or EOF).
 extract() { awk '/^## Improving this skill$/{f=1; print; next} /^## /{f=0} f{print}' "$1"; }
 
 ref="$(extract "${HOSTS[0]}")"
