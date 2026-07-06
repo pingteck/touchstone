@@ -72,6 +72,8 @@ evidence (the verifier does that).
 > CONCRETE scenario (a specific sequence, never a vibe), the claim/evidence it hinges
 > on (with the file path or the external claim to check), and a proposed mitigation.
 > Add one content-specific lens only if the artifact clearly warrants it.
+> Capabilities: read-only file access; no write access; do not use the Agent tool to
+> spawn sub-agents.
 
 ## [2] Independent verifier subagent
 

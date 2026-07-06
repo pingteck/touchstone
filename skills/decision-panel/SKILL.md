@@ -75,6 +75,8 @@ what survives the gates.
   templates** (same structure + length budget; each option's framing from the *frame*,
   not the mediator's paraphrase — so no option is under-steelmanned). Flat instructions,
   not personas.
+- **Advocate capabilities:** read-only file access; no write access; do not use the
+  Agent tool to spawn sub-agents.
 - Each builds the **strongest principled case** and **honestly engages the others**,
   emitting structured tags each round: **CONCEDE** (withdraws/qualifies a previously
   asserted claim), **HOLD**, **COUNTER**, **NEW-CRUX**.
@@ -126,8 +128,9 @@ The mediator is the main thread — the contract binds the orchestrator.
 
 ## [5] Independent synthesis-check
 
-Dispatch a **separate-context subagent** before emitting the verdict. It re-reads the
-advocate transcripts and confirms:
+Dispatch a **separate-context subagent** before emitting the verdict. (Capabilities:
+read-only access to the transcripts and repo; no write access; do not use the Agent
+tool to spawn sub-agents.) It re-reads the advocate transcripts and confirms:
 
 - each **claimed concession / crux resolution** actually occurred (catches a mediator
   hallucinating "B conceded latency");
