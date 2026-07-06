@@ -46,14 +46,16 @@ confirm converged (else → decision-panel)
   → [3] adjudicate in the main thread → severity-ranked report
 ```
 
-Default ≈ 3 subagent calls + main-thread adjudication. Dispatch every subagent with an
-explicit `model` (default `opus` — this is reasoning-heavy). The verifier runs in a
+Default = 2 subagent calls (adversary, verifier) + main-thread adjudication. Dispatch
+every subagent with an explicit `model` — an opus-class or stronger reasoning model
+(an explicit user model choice always wins; the footer names the model). The verifier
+runs in a
 **separate** context from the adversary (independence catches the adversary's own
 hallucinated evidence).
 
 ## [1] Adversary subagent
 
-Dispatch one subagent (opus) with this mandate. It attacks from three angles and
+Dispatch one subagent (an opus-class model) with this mandate. It attacks from three angles and
 returns findings in the **finding shape** below — it does NOT get to bless its own
 evidence (the verifier does that).
 
@@ -70,29 +72,21 @@ evidence (the verifier does that).
 > CONCRETE scenario (a specific sequence, never a vibe), the claim/evidence it hinges
 > on (with the file path or the external claim to check), and a proposed mitigation.
 > Add one content-specific lens only if the artifact clearly warrants it.
+> Capabilities: read-only file access; no write access; do not use the Agent tool to
+> spawn sub-agents.
 
-## [2] Independent verifier subagent — the verification contract
+## [2] Independent verifier subagent
 
-Dispatch a **separate** subagent (opus, skeptical, ground-truth-only) to verify
-**Critical/High** findings (or **all** findings if the user said "verify everything").
-It is the step the baseline never does, so it is non-negotiable.
+Dispatch a **separate** verifier subagent to check **Critical/High** findings (or
+**all** findings if the user said "verify everything"). It is the step the baseline
+never does, so it is non-negotiable.
 
-**Two sources of truth** — check each claim against the RIGHT one:
-- **Internal/repo claim** ("it's gitignored", "`command -v` passes") → read the actual
-  files / run read-only commands. Pin `path:line` + the snippet.
-- **External/world claim** ("API delivers exactly-once", "rejects JSONC", "X behaves
-  like Y") → web-search authoritative sources. Pin **URL + the exact quote**.
-
-**Tag every checked finding** and demote what doesn't hold:
-- `[VERIFIED]` / `[WEB-VERIFIED]` — confirmed, evidence pinned.
-- `[REFUTED]` / `[WEB-REFUTED]` — the finding is wrong; drop it (keep a one-line trace).
-- `[UNCONFIRMED]` / `[WEB-INCONCLUSIVE]` — couldn't confirm; **demote severity** and
-  say so. Never present as confirmed.
-
-**Source-quality discipline:** prefer primary/authoritative sources (official docs,
-the actual source, specs/RFCs) over blogs/forums/memory. **Asserting from training
-memory is not verification** — go check. A weak/secondary source stays
-`[UNCONFIRMED]`. Note version/date when behavior is version-specific.
+**REQUIRED: read `references/verifier-contract.md` (in this skill's directory) and
+include it verbatim in the verifier's dispatch prompt.** In short: the verifier runs
+in a separate context from the adversary; repo claims are pinned `path:line` +
+snippet, external claims URL + exact quote; every checked finding is tagged
+`[VERIFIED]` / `[REFUTED]` / `[UNCONFIRMED]`; unconfirmed findings are **demoted**,
+never presented as confirmed.
 
 ## [3] Adjudicate (main thread — you, with the user)
 
@@ -123,12 +117,15 @@ on it.
    dropped"). No finding silently disappears: if a finding is folded or dropped during
    adjudication, it still gets a ledger line — never just a mention in prose. If the
    count changed from the adversary's, the ledger shows why.
-5. **Shared-bias + cost footer** — "all reviewers Claude; model-mix off; ~N calls."
+5. **Shared-bias + cost footer** — "all reviewers Claude (<model>); model-mix off; ~N calls."
 6. **Do this first** — the mitigations as a dependency-ordered sequence.
 
 ## Cost & opt-ins (no flag system — strong defaults + plain language)
 
-- **Default (tight):** adversary → verify Critical/High → adjudicate. All opus. ~3–4 calls.
+- **Default (tight):** adversary → verify Critical/High → adjudicate. 2 subagent calls;
+  +1–2 more only if adjudication raises a new severe finding that itself needs
+  verification.
+- **"run it lean on <model>"** → all roles on that model; the footer names it.
 - **"verify everything"** → verifier checks all findings, not just Critical/High.
 - **"high-stakes / add diversity"** → split the adversary into separate per-lens
   subagents (and optionally a model-mixed lens). Costs more; use when stakes justify it.
@@ -139,7 +136,7 @@ on it.
 
 | Rationalization | Reality |
 |---|---|
-| "This claim is obviously true, no need to check" | Obvious-but-false is exactly what red-team exists to catch (F2: "it's gitignored" was false). Verify. |
+| "This claim is obviously true, no need to check" | Obvious-but-false is exactly what red-team exists to catch — "it's gitignored" / "it's already validated" are classic examples. Verify. |
 | "I know this API/behavior from training" | Memory drifts and is version-specific. Pin a current authoritative source or tag `[UNCONFIRMED]`. |
 | "I can't verify it, so I'll skip it / assume it's fine" | The unverifiability IS the finding. Tag `[UNCONFIRMED]`, name the assumption, say "go verify". |
 | "Severity ranking is fluff" | Unranked findings bury the ship-blockers. Critical/High/Medium/Low is required. |
@@ -160,4 +157,4 @@ on it.
 
 ## Improving this skill
 
-If, while using this skill, one of these held — you contradicted an explicit instruction here, the skill gave no guidance for a situation you were forced to handle, or you caught yourself rationalizing around one of its rules — consider **offering** to file a feedback report via `/report-skill-gap` (consent-first; never for normal use or mere preference).
+If, while using this skill, one of these held — you contradicted an explicit instruction here, the skill gave no guidance for a situation you were forced to handle, or you caught yourself rationalizing around one of its rules — consider **suggesting the user run `/report-skill-gap`** to file a feedback report (the user must invoke it themselves; never suggest it for normal use or mere preference).

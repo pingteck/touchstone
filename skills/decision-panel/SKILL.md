@@ -44,7 +44,9 @@ factual) → [4] mediator drafts synthesis BY PRINCIPLE → [5] independent synt
 → report
 ```
 
-Reasoning-heavy: dispatch every subagent with explicit `model` (default **opus**).
+Reasoning-heavy: dispatch every subagent with an explicit `model` — an opus-class or
+stronger reasoning model (an explicit user model choice always wins; the footer names
+the model).
 A-priori cost ≈ `options × rounds + factual claims verified (cruxes + load-bearing
 synthesis claims) + 2` (mediator + synthesis-check); state it up front and report
 actuals.
@@ -73,6 +75,8 @@ what survives the gates.
   templates** (same structure + length budget; each option's framing from the *frame*,
   not the mediator's paraphrase — so no option is under-steelmanned). Flat instructions,
   not personas.
+- **Advocate capabilities:** read-only file access; no write access; do not use the
+  Agent tool to spawn sub-agents.
 - Each builds the **strongest principled case** and **honestly engages the others**,
   emitting structured tags each round: **CONCEDE** (withdraws/qualifies a previously
   asserted claim), **HOLD**, **COUNTER**, **NEW-CRUX**.
@@ -83,57 +87,68 @@ what survives the gates.
 
 ## [3] Crux resolution — decompose, then verify the facts
 
-A crux is where advocates won't concede. **Decompose every crux into its factual
-sub-claims and its residual value question** — a crux isn't resolved until its factual
-part carries a tag:
-- **Factual sub-claim** ("Postgres SKIP LOCKED sustains ~500 jobs/sec", "Redis loses jobs
-  on crash unless persisted") → **verify with a separate-context verifier subagent** (its
-  independence is non-negotiable — it catches the producer's own hallucinated evidence):
-  check **internal/repo claims** against files (pin `path:line` + snippet) and
-  **external/world claims** against authoritative sources (pin **URL + exact quote**);
-  **tag** `[VERIFIED]`/`[WEB-VERIFIED]`/`[REFUTED]`/`[UNCONFIRMED]` and **demote what you
-  can't confirm** (never present unconfirmed as confirmed); prefer primary sources;
-  asserting from memory is **not** verification. Verify what's checkable **now** — don't
-  defer a checkable fact to "they should test it later" **or park it in the revisit
-  trigger.** **Default scope — two categories, both required:** (a) **crux factual
-  claims**; and (b) **every load-bearing factual claim the synthesis itself rests on** —
-  the facts under the recommendation's cost framing and the "what you lose" (§§4, output
-  slots 3 & 6) — **even if no advocate contested it.** A claim is **load-bearing** when
-  the recommendation, or the cost you state for it, changes if the claim is false; an
-  **uncontested advocate FOR-claim you lean on as your deciding cost is load-bearing.**
-  Human opt-in **"verify all factual claims"** widens (b) to *every* factual claim. The
-  verification *discipline* above is canonical, kept in sync:
-  `skills/_shared/verifier-contract.md`.
-- **Residual value question** → carried to the mediator, resolved by the principle.
+A crux is where advocates won't concede. For **each crux**:
 
-## [4] Mediator synthesis & [5] independent synthesis-check
+1. **Decompose** it into factual sub-claims + a residual value question. A crux isn't
+   resolved until its factual part carries a tag.
+2. **Verify each factual sub-claim** with a **separate-context verifier subagent**
+   (its independence is non-negotiable — it catches the producer's own hallucinated
+   evidence). **REQUIRED: read `references/verifier-contract.md` (in this skill's
+   directory) and include it verbatim in the verifier's dispatch prompt.** In short:
+   repo claims pinned `path:line` + snippet; external claims URL + exact quote; tag
+   `[VERIFIED]` / `[REFUTED]` / `[UNCONFIRMED]`; **demote what you can't confirm.**
+3. **Verify now, not later.** A checkable fact may not be deferred to "they should
+   test it later" or parked in the revisit trigger.
+4. **Carry the residual value question** to the mediator; the principle resolves it.
 
-The mediator (main thread — the contract binds the orchestrator) drafts the call **by
-principle, not vote**, and **may override the advocate majority** if a minority's
-reasoning best serves the principle. The facts under your **own** cost framing and "what
-you lose" are **in scope for verification** (§3 category b), not free assertions — an
-**uncontested advocate claim you now lean on is still a claim;** verify the checkable
-ones now or tag them, don't relabel them "assumption" and move on.
+**Default verification scope — two categories, both required:**
 
-**Independent synthesis-check (separate-context subagent) before emitting the verdict.**
-It re-reads the advocate transcripts and confirms:
+- **(a) Crux factual claims** — every factual sub-claim from step 1.
+- **(b) Load-bearing synthesis claims** — every factual claim the synthesis itself
+  rests on: the facts under the recommendation's cost framing and the "what you lose"
+  (output slots 3 & 6), **even if no advocate contested it.**
+
+A claim is **load-bearing** when the recommendation, or the cost you state for it,
+changes if the claim is false. An uncontested advocate FOR-claim you lean on as your
+deciding cost **is load-bearing.**
+
+Human opt-in **"verify all factual claims"** widens (b) to *every* factual claim.
+
+## [4] Mediator synthesis
+
+The mediator is the main thread — the contract binds the orchestrator.
+
+- Draft the call **by principle, not vote**; you **may override the advocate
+  majority** if a minority's reasoning best serves the principle.
+- The facts under your **own** cost framing and "what you lose" are §3 category-(b)
+  claims, **in scope for verification** — not free assertions. An uncontested
+  advocate claim you now lean on is still a claim.
+- Verify the checkable ones now, or tag them `[UNCONFIRMED]` — don't relabel them
+  "assumption" and move on.
+
+## [5] Independent synthesis-check
+
+Dispatch a **separate-context subagent** before emitting the verdict. (Capabilities:
+read-only access to the transcripts and repo; no write access; do not use the Agent
+tool to spawn sub-agents.) It re-reads the advocate transcripts and confirms:
+
 - each **claimed concession / crux resolution** actually occurred (catches a mediator
   hallucinating "B conceded latency");
 - the **principle was applied** as stated (not silently swapped);
-- names the **frontrunner's strongest *unrebutted* weakness** (so good-faith concession
-  can't quietly become groupthink);
-- confirms **every load-bearing factual claim in the recommendation's cost framing and
-  the "what you lose" (slots 3, 6) carries a verification tag** — checkable claims
-  verified **now** (separate context, §3 contract), not asserted from memory and **not
-  parked in the revisit trigger**; what can't be confirmed is tagged `[UNCONFIRMED]` and
-  demoted. An untagged load-bearing claim **fails the check.**
-- **enforces the one-way-door guard** below.
+- the **frontrunner's strongest *unrebutted* weakness** is named (so good-faith
+  concession can't quietly become groupthink);
+- **every load-bearing factual claim** in the recommendation's cost framing and the
+  "what you lose" (slots 3, 6) **carries a verification tag** — checked now (separate
+  context, §3 contract), not asserted from memory, not parked in the revisit trigger.
+  An untagged load-bearing claim **fails the check**;
+- the **one-way-door guard** below holds.
+
 If the check fails, the mediator **revises** (verifies or demotes) before emitting.
 
 **One-way-door guard:** an **irreversible** decision whose **deciding crux is
 `[UNCONFIRMED]`** may **not** emit a clean recommendation. Either return **"decision
-blocked — verify crux Z empirically first,"** or rest the call **explicitly on the stated
-assumption** with a **hard revisit trigger.**
+blocked — verify crux Z empirically first,"** or rest the call **explicitly on the
+stated assumption** with a **hard revisit trigger.**
 
 ## Output contract — REQUIRED slots, in order
 
@@ -154,16 +169,17 @@ assumption** with a **hard revisit trigger.**
    here is verified now and tagged** (or `[UNCONFIRMED]` + demoted) — never asserted from
    memory because "it wasn't a crux."
 7. **Confidence + revisit trigger** — confidence; what new info would flip the call.
-8. **Shared-bias + cost footer** — all reviewers Claude; rounds run; verification +
+8. **Shared-bias + cost footer** — all reviewers Claude (<model>); rounds run; verification +
    synthesis-check calls spent vs the a-priori estimate; model-mix off.
 
 ## Cost & opt-ins (no flag system — defaults + plain language)
 
 - **Default (lean):** frame → N advocates, 1 round → verify crux + load-bearing synthesis
   factual claims → mediator → synthesis-check. Adaptive rounds only while concessions/cruxes appear
-  (cap ~3). All opus.
+  (cap ~3). All opus-class by default.
 - **Opt-ins:** *"verify all factual claims"* · *"high-stakes"* (devil's-advocate +
-  model-mix) · *"deliberate deeper"* (raise the round cap).
+  model-mix) · *"deliberate deeper"* (raise the round cap) · *"run it lean on
+  <model>"* (all roles on that model; the footer names it).
 
 ## Common mistakes & rationalizations
 
@@ -194,4 +210,4 @@ assumption** with a **hard revisit trigger.**
 
 ## Improving this skill
 
-If, while using this skill, one of these held — you contradicted an explicit instruction here, the skill gave no guidance for a situation you were forced to handle, or you caught yourself rationalizing around one of its rules — consider **offering** to file a feedback report via `/report-skill-gap` (consent-first; never for normal use or mere preference).
+If, while using this skill, one of these held — you contradicted an explicit instruction here, the skill gave no guidance for a situation you were forced to handle, or you caught yourself rationalizing around one of its rules — consider **suggesting the user run `/report-skill-gap`** to file a feedback report (the user must invoke it themselves; never suggest it for normal use or mere preference).

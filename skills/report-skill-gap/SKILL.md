@@ -13,14 +13,13 @@ through its RED→GREEN→guards loop. The report is a **RED-test hypothesis, no
 you produce a clean, copy-pasteable artifact; a human relays it; the repo's dev session
 verifies and acts. You never edit the other skill.
 
-## Consent first — generating costs the current session's tokens
+## You're here because the user invoked `/report-skill-gap`
 
-Generating a report spends **this** session's tokens and interrupts the human's own task,
-so it is **opt-in, never unsolicited.** When a trigger holds, first ask, briefly:
-*"I hit a gap in `<skill>` — generate a feedback report for the skills repo? (small token
-cost)"* **Generate + emit the block only on an explicit "yes."** Detection is near-free;
-do the costly generation only after consent. **No human to ask (headless/autonomous)? Do
-not generate** — the relay needs a human anyway.
+This skill never fires autonomously (`disable-model-invocation: true`) — the user
+typing the command IS the consent. Reconstruct the gap from the conversation: which
+skill, what situation (S), what it did (A), what it should have done (E). **If no
+qualifying trigger below holds, say so plainly and stop** — don't manufacture a report
+to justify the invocation.
 
 ## When to file — objective triggers ONLY
 
@@ -74,5 +73,5 @@ bury it in prose. The human relays it; the repo verifies and runs RED→GREEN→
 - Filing on normal use or mere preference (no nameable contradiction / missing-guidance).
 - A `trigger`/`actual`/`expected` that can't be phrased as the testable sentence.
 - A report missing the fenced block (unstructured prose the repo can't consume).
-- Generating a report without asking first (consent).
+- Manufacturing a report when no objective trigger holds (invocation is not evidence of a gap).
 - Any field containing a secret, credential, PII, customer name, or internal hostname.
