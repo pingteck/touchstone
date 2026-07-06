@@ -66,8 +66,10 @@ is explicit-invocation only (`/report-skill-gap`) — it never auto-fires
 (`disable-model-invocation: true`). Update anytime with `/plugin marketplace update pingteck`
 + `/reload-plugins` — updates are NOT automatic for third-party marketplaces unless you
 enable auto-update (`/plugin` → Marketplaces → pingteck), after which new versions land at
-session start. If you already have a personal skill of the same name, both appear —
-the plugin's is tagged `(touchstone)`; type `touchstone:red-team` to force the plugin's.
+session start. Plugin skills are always namespaced (`touchstone:red-team`), so they never
+collide with a personal skill named `red-team` — if you have both installed (e.g. the dev
+symlinks below), the bare name is your personal copy; use the `touchstone:`-prefixed form
+to invoke the plugin's.
 
 **For development — symlink** the repo into `~/.claude/skills/` for live edits instead:
 
