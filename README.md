@@ -16,6 +16,12 @@ brainstorming → writing-skills (TDD for docs).
 **One-liner:** `decision-panel` helps you *decide*; `red-team` *tries to break the
 decision you made*.
 
+**Scope: design-level.** Both skills reason about decisions — an architecture, plan,
+ADR, or contested tradeoff. `decision-panel` helps you reach a decision; `red-team`
+attacks a converged one. "red-team" is the attitude, not a security audit of a diff.
+For bugs and quality on changed code use `/code-review`; for a vulnerability pass use
+`/security-review`.
+
 They **chain and point at each other.** Panel converges on a design → red-team
 stress-tests it before build. Tie-breaker (stated in both): *if any option is still
 genuinely open, `decision-panel` owns it; only a fully-settled single design goes to
