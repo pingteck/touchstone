@@ -102,23 +102,37 @@ on it.
 
 ## The report (output contract — REQUIRED slots, in order)
 
-1. **Verdict line** — one honest sentence ("2 Critical, 1 High; ship-blocked until F1/F2 fixed").
-2. **Severity-ranked findings** — Critical→Low, each in the finding shape:
+**Write it self-contained** — the reader saw **neither the artifact nor the
+adversary/verifier transcripts**, so a bare artifact decision ID (`D3`) or adversary
+finding ID (`F7`) is opaque to them. Key the report on your own finding IDs, and restate
+what any referenced item *is* the first time it appears.
+
+1. **Verdict line** — one honest sentence ("2 Critical, 1 High; ship-blocked until C1/C2 fixed").
+2. **Overview table** — one row per reported finding, severity-ordered, so the reader can
+   scan the whole result before any prose: **ID · severity · one-line · disposition**
+   (kept / demoted / folded / refuted). This is the reader-facing map; it is distinct from
+   the adversary-finding ledger (slot 5), which is the traceability accounting.
+3. **Severity-ranked findings** — Critical→Low, each in the finding shape:
    - **Title + severity**
    - **Concrete scenario** — how it actually bites; a specific sequence, not a vibe.
+   - **What it targets, restated** — name the artifact decision/claim the finding hits and
+     say what it is in one clause ("targets D4 — the signed payload omits the nonce and
+     timestamp"), so the finding stands alone without the artifact in hand.
    - **Evidence + verification tag, sources inline & clickable** — repo claim → tag +
      `path:line` (+ snippet); external claim → tag + **URL + exact quote**.
    - **Mitigation** — explicit, actionable, with **ordering/prereqs** where they matter
      ("write the `.gitignore` entry *before* creating the private file").
-3. **Adjudication notes** — where you didn't rubber-stamp; de-fang collapses.
-4. **Findings ledger / what narrowed** — account for **every** numbered adversary
+4. **Adjudication notes** — where you didn't rubber-stamp; de-fang collapses.
+5. **Findings ledger / what narrowed** — account for **every** numbered adversary
    finding as **kept / demoted / folded(→target) / refuted**, each with a one-line
    trace ("F6 replay → folded into F1+F5"; "F7 injection → [UNCONFIRMED], no sink →
    dropped"). No finding silently disappears: if a finding is folded or dropped during
    adjudication, it still gets a ledger line — never just a mention in prose. If the
    count changed from the adversary's, the ledger shows why.
-5. **Shared-bias + cost footer** — "all reviewers Claude (<model>); model-mix off; ~N calls."
-6. **Do this first** — the mitigations as a dependency-ordered sequence.
+6. **Shared-bias + cost footer** — "all reviewers Claude (<model>); model-mix off; ~N calls."
+7. **Do this first** — the mitigations as a dependency-ordered sequence. State each step
+   as the fix in words, not a bare decision ID ("sign the nonce and a timestamp (D4)", not
+   "resolve D4").
 
 ## Cost & opt-ins (no flag system — strong defaults + plain language)
 
@@ -131,6 +145,11 @@ on it.
   subagents (and optionally a model-mixed lens). Costs more; use when stakes justify it.
 - Control grounding cost: verify gated to Critical/High by default; don't bulk-load
   docs you don't need — search for the specific claim.
+- **Dense report → offer a navigable view (opt-in, after the markdown).** When the report
+  carries many findings, the markdown above is the deliverable and system of record;
+  *after* emitting it, you may offer to render it as a navigable Artifact ("that's N
+  findings — want it as a navigable Artifact?"). Soft see-also, never a dependency: if no
+  rendering capability is available the markdown stands alone.
 
 ## Common mistakes & rationalizations
 
@@ -142,6 +161,7 @@ on it.
 | "Severity ranking is fluff" | Unranked findings bury the ship-blockers. Critical/High/Medium/Low is required. |
 | "I'll just list the findings" | A flat list isn't the deliverable. The contract (tags, pinned evidence, adjudication, ordered fixes) is. |
 | "All findings are real, accept them" | Adjudicate. Some get de-fanged by another fix; some are refuted by the verifier. |
+| "The reader has the artifact and the F1..Fn transcript in front of them" | They don't — they saw only your report. Lead with the overview table and restate each referenced decision/claim inline; a bare `D3`/`F7` is opaque to them. |
 
 ## Red flags — STOP
 
