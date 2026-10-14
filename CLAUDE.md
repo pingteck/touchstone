@@ -10,6 +10,11 @@ added. See `README.md` for the overview.
 - **Skills are developed here and symlinked into `~/.claude/skills/`.** The symlink uses
   an absolute path, so **re-point it if this repo moves** (see README `## Install`).
 
+- **Any change under `skills/` must bump `version` in `.claude-plugin/plugin.json`.** The
+  version is pinned, so installed users get nothing until it changes (the symlinks hide
+  this — they ignore the version). Patch for wording fixes, minor for new behavior or a
+  new skill, major for a breaking contract change. `tests/lint-version-bump.sh` enforces it.
+
 - **Iron Law — never edit a `SKILL.md` without a failing test first.** Changing a skill
   means running the writing-skills TDD loop: RED (baseline without the change) → GREEN
   (with it) → guards. This applies to "small" edits too. (`superpowers:writing-skills`.)

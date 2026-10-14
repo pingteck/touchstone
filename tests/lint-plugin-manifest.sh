@@ -13,12 +13,15 @@ PLG=.claude-plugin/plugin.json
 
 python3 -m json.tool "$PLG" >/dev/null 2>&1 || fail "$PLG is not valid JSON"
 
-# plugin.json: name == touchstone, and NO version key (per-commit SHA versioning)
+# plugin.json: name == touchstone, and a pinned X.Y.Z version. Without one, Claude Code
+# versions the plugin by commit SHA, so every docs/test commit reads as an update.
+# (lint-version-bump.sh enforces bumping it when skills/ changes.)
 python3 - "$PLG" <<'PY' || exit 1
-import json, sys
+import json, re, sys
 p = json.load(open(sys.argv[1]))
 assert p.get("name") == "touchstone", f"plugin name must be 'touchstone', got {p.get('name')!r}"
-assert "version" not in p, "plugin.json must OMIT 'version' (per-commit SHA versioning)"
+v = p.get("version")
+assert isinstance(v, str) and re.fullmatch(r"\d+\.\d+\.\d+", v), f"plugin.json must pin a semver 'version' (X.Y.Z), got {v!r}"
 PY
 
 # Every skills/*/ that has a SKILL.md must be an expected skill; _shared must have none.
