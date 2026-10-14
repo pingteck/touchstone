@@ -73,10 +73,11 @@ is explicit-invocation only (`/report-skill-gap`) — it never auto-fires
 + `/reload-plugins` — updates are NOT automatic for third-party marketplaces unless you
 enable auto-update (`/plugin` → Marketplaces → pingteck), after which new versions land
 early in your next session. A new version exists only when `version` in
-`.claude-plugin/plugin.json` is bumped — commits that don't bump it never reach you. Plugin skills are always namespaced (`touchstone:red-team`), so they never
-collide with a personal skill named `red-team` — if you have both installed (e.g. the dev
-symlinks below), the bare name is your personal copy; use the `touchstone:`-prefixed form
-to invoke the plugin's.
+`.claude-plugin/plugin.json` is bumped — commits that don't bump it never reach you.
+Plugin skills are always namespaced (`touchstone:red-team`), so they never collide with a
+personal skill named `red-team` — if you have both installed (e.g. the dev symlinks
+below), the bare name is your personal copy; use the `touchstone:`-prefixed form to
+invoke the plugin's.
 
 **For development — symlink** the repo into `~/.claude/skills/` for live edits instead:
 
@@ -122,6 +123,7 @@ tests/
 .github/
   CONTRIBUTING.md                  # how to contribute + report gaps
   ISSUE_TEMPLATE/skill-feedback.md # the skill-feedback intake template
+  workflows/lint.yml               # CI: runs tests/lint.sh on PRs and pushes to main
 CLAUDE.md                          # conventions for working in this repo
 ```
 
