@@ -5,4 +5,5 @@ cd "$(dirname "$0")/.."
 ./tests/lint-pointer-sync.sh
 ./tests/lint-plugin-manifest.sh
 ./tests/lint-verifier-sync.sh
+./tests/lint-version-bump.sh
 echo "OK: all lints passed"

@@ -71,11 +71,13 @@ rely on natural triggers ("stress-test this design", "which should we pick"). `r
 is explicit-invocation only (`/report-skill-gap`) — it never auto-fires
 (`disable-model-invocation: true`). Update anytime with `/plugin marketplace update pingteck`
 + `/reload-plugins` — updates are NOT automatic for third-party marketplaces unless you
-enable auto-update (`/plugin` → Marketplaces → pingteck), after which new versions land at
-session start. Plugin skills are always namespaced (`touchstone:red-team`), so they never
-collide with a personal skill named `red-team` — if you have both installed (e.g. the dev
-symlinks below), the bare name is your personal copy; use the `touchstone:`-prefixed form
-to invoke the plugin's.
+enable auto-update (`/plugin` → Marketplaces → pingteck), after which new versions land
+early in your next session. A new version exists only when `version` in
+`.claude-plugin/plugin.json` is bumped — commits that don't bump it never reach you.
+Plugin skills are always namespaced (`touchstone:red-team`), so they never collide with a
+personal skill named `red-team` — if you have both installed (e.g. the dev symlinks
+below), the bare name is your personal copy; use the `touchstone:`-prefixed form to
+invoke the plugin's.
 
 **For development — symlink** the repo into `~/.claude/skills/` for live edits instead:
 
@@ -117,9 +119,11 @@ tests/
   lint-pointer-sync.sh             # asserts the "Improving this skill" pointer stays byte-identical
   lint-plugin-manifest.sh          # asserts plugin.json is consistent with skills/
   lint-verifier-sync.sh            # asserts the contract copies match the canonical file
+  lint-version-bump.sh             # asserts plugin.json's version is bumped when skills/ changes
 .github/
   CONTRIBUTING.md                  # how to contribute + report gaps
   ISSUE_TEMPLATE/skill-feedback.md # the skill-feedback intake template
+  workflows/lint.yml               # CI: runs tests/lint.sh on PRs and pushes to main
 CLAUDE.md                          # conventions for working in this repo
 ```
 

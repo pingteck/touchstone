@@ -15,7 +15,8 @@ README [`## Install`](../README.md#install). One time:
 /reload-plugins
 ```
 
-Update any time with `/plugin marketplace update pingteck` + `/reload-plugins`. You can
+Update any time with `/plugin marketplace update pingteck` + `/reload-plugins`; a new
+release exists only when `version` in `.claude-plugin/plugin.json` is bumped. You can
 also develop against a local clone via symlinks (README `## Install`) — that's the
 maintainer's path; the plugin is the everyday path.
 

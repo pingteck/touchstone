@@ -1,4 +1,5 @@
 {
   "name": "touchstone",
+  "version": "1.0.0",
   "description": "red-team + decision-panel + report-skill-gap — review/reasoning skills that verify, don't assert."
 }
